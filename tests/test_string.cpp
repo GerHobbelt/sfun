@@ -296,3 +296,15 @@ TEST(String, cctypeWrappers)
     EXPECT_EQ(toupper('A'), 'A');
     EXPECT_NE(toupper('z'), 'z');
 }
+
+TEST(String, JoinStrings)
+{
+    EXPECT_EQ(join_strings(""), std::string{});
+    EXPECT_EQ(join_strings("", ""), std::string{});
+    EXPECT_EQ(join_strings("", "test"), std::string{"test"});
+    EXPECT_EQ(join_strings("test", ""), std::string{"test"});
+    EXPECT_EQ(join_strings("hello", " ", "world"), std::string{"hello world"});
+    EXPECT_EQ(join_strings("hello", std::string{" "}, std::string_view{"world"}), std::string{"hello world"});
+    auto string = std::string{" "};
+    EXPECT_EQ(join_strings("hello", string, std::string_view{"world"}), std::string{"hello world"});
+}

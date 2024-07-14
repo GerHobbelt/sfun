@@ -8,6 +8,7 @@
 #include <string>
 #include <string_view>
 #include <vector>
+#include <type_traits>
 
 namespace sfun {
 
@@ -298,6 +299,17 @@ inline std::optional<std::string> between(std::string&& str, std::string_view af
     if (!result.has_value())
         return std::nullopt;
     return std::string{result.value()};
+}
+
+template <typename... Args>
+std::string join_strings(Args&&... args) {
+    static_assert((std::is_convertible_v<std::decay_t<Args>, std::string_view> && ...), "arguments must be convertible to std::string_view");
+
+    const auto totalSize = (std::string_view{args}.size() + ...);
+    auto result = std::string{};
+    result.reserve(totalSize);
+    (result.append(std::string_view{args}), ...);
+    return result;
 }
 
 } //namespace sfun
