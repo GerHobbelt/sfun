@@ -36,3 +36,21 @@ TEST(TypeList, Slice)
     EXPECT_TRUE((std::is_same_v<decltype(list.template slice<1, 2>()), type_list<double, Foo>>));
     EXPECT_TRUE((std::is_same_v<decltype(list.template slice<0, list.size()>()), type_list<int, double, Foo>>));
 }
+
+TEST(TypeList, Compare)
+{
+    auto list = type_list<int, double, Foo>{};
+    EXPECT_TRUE((list == type_list<int, double, Foo>{}));
+    EXPECT_FALSE((list == type_list<double, double, Foo>{}));
+    EXPECT_FALSE((list == type_list<int, double>{}));
+
+    constexpr auto list2 = type_list<int, double, Foo>{};
+    static_assert(list2 == type_list<int, double, Foo>{});
+}
+
+TEST(TypeList, ConstructFromTuple)
+{
+    auto list = type_list<int, double, Foo>{};
+    EXPECT_TRUE((list == type_list{std::tuple<int, double, Foo>{}}));
+    EXPECT_FALSE((list == type_list{std::tuple<double, Foo>{}}));
+}

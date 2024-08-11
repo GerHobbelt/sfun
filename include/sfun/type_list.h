@@ -37,6 +37,9 @@ class type_list {
     using list = detail::TypeList<Ts...>;
 
 public:
+    type_list() = default;
+    type_list(std::tuple<Ts...>){};
+
     static constexpr int size()
     {
         return sizeof...(Ts);
@@ -55,6 +58,22 @@ public:
         return decltype(detail::makeTypeListSlice<list>(make_index_range<First, First + Size>{})){};
     }
 };
+
+template<std::size_t... I, typename... TLhs, typename... TRhs>
+constexpr bool compareImpl(std::index_sequence<I...>, const type_list<TLhs...>& lhs, const type_list<TRhs...>& rhs)
+{
+    return (std::is_same_v<decltype(lhs.template at<I>()), decltype(rhs.template at<I>())> && ...);
+}
+
+template<typename... TLhs, typename... TRhs>
+constexpr bool operator==(const type_list<TLhs...>& lhs, const type_list<TRhs...>& rhs)
+{
+    if constexpr (type_list<TLhs...>::size() != type_list<TRhs...>::size())
+        return false;
+    else
+        return compareImpl(std::make_index_sequence<type_list<TLhs...>::size()>{}, lhs, rhs);
+}
+
 
 template<std::size_t I, typename... TListArgs>
 constexpr auto get(const type_list<TListArgs...>&)
