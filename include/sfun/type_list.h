@@ -52,11 +52,25 @@ public:
     }
 
     template<std::size_t First, std::size_t Size>
-    static auto slice()
+    static constexpr auto slice()
     {
         static_assert(First + Size <= size());
         return decltype(detail::makeTypeListSlice<list>(make_index_range<First, First + Size>{})){};
     }
+
+    template<typename TFunc>
+    static constexpr void for_each(TFunc&& func)
+    {
+        for_each_impl(std::make_index_sequence<size()>{}, func);
+    }
+
+private:
+    template<std::size_t... Is, typename TFunc>
+    static constexpr void for_each_impl(std::index_sequence<Is...>, TFunc&& func)
+    {
+        (func(at<Is>()), ...);
+    }
+
 };
 
 template<std::size_t... I, typename... TLhs, typename... TRhs>

@@ -54,3 +54,34 @@ TEST(TypeList, ConstructFromTuple)
     EXPECT_TRUE((list == type_list{std::tuple<int, double, Foo>{}}));
     EXPECT_FALSE((list == type_list{std::tuple<double, Foo>{}}));
 }
+
+template<typename T>
+struct TestIntHolder;
+
+template<>
+struct TestIntHolder<int>
+{
+    static inline auto value = 1;
+};
+
+template<>
+struct TestIntHolder<double>
+{
+    static inline auto value = 2;
+};
+
+template<>
+struct TestIntHolder<Foo>
+{
+    static inline auto value = 3;
+};
+
+TEST(TypeList, ForEach)
+{
+    auto list = type_list<int, double, Foo>{};
+    auto result = 0;
+    list.for_each([&](auto typeId){
+        result += TestIntHolder<typename decltype(typeId)::type>::value;
+    });
+    EXPECT_EQ(result, 6);
+}
