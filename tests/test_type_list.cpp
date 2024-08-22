@@ -29,6 +29,12 @@ TEST(TypeList, ToTuple)
     EXPECT_TRUE((std::is_same_v<to_tuple_t<decltype(list)>, std::tuple<int, double, Foo>>));
 }
 
+TEST(TypeList, ToTypeIdTuple)
+{
+    auto list = type_list<int, double, Foo>{};
+    EXPECT_TRUE((std::is_same_v<to_type_id_tuple_t<decltype(list)>, std::tuple<type_identity<int>, type_identity<double>, type_identity<Foo>>>));
+}
+
 TEST(TypeList, Slice)
 {
     auto list = type_list<int, double, Foo>{};

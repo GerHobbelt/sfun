@@ -112,6 +112,14 @@ struct to_tuple<type_list<Args...>> {
 template<typename T>
 using to_tuple_t = typename to_tuple<T>::type;
 
+template<typename... Args>
+struct to_type_id_tuple<type_list<Args...>> {
+    using type = std::tuple<type_identity<Args>...>;
+};
+
+template<typename T>
+using to_type_id_tuple_t = typename to_type_id_tuple<T>::type;
+
 } //namespace sfun
 
 #endif //SFUN_TYPE_LIST_H

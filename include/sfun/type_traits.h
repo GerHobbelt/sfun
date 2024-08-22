@@ -136,11 +136,19 @@ template<typename T, typename... Args>
 struct to_tuple {};
 
 template<typename T, typename... Args>
+struct to_type_id_tuple {};
+
+template<typename T, typename... Args>
 struct decay_tuple {};
 
 template<typename... Args>
 struct decay_tuple<std::tuple<Args...>> {
     using type = std::tuple<std::decay_t<Args>...>;
+};
+
+template<typename... Args>
+struct decay_tuple<std::tuple<type_identity<Args>...>> {
+    using type = std::tuple<type_identity<std::decay_t<Args>>...>;
 };
 
 template<typename T>

@@ -57,6 +57,11 @@ TEST(Traits, DecayTuple)
     EXPECT_TRUE((std::is_same_v<decay_tuple_t<std::tuple<const int&, double&&>>, std::tuple<int, double>>));
 }
 
+TEST(Traits, DecayTypeIdTuple)
+{
+    EXPECT_TRUE((std::is_same_v<decay_tuple_t<std::tuple<type_identity<const int&>, type_identity<double&&>>>, std::tuple<type_identity<int>, type_identity<double>>>));
+}
+
 TEST(Traits, ProvidesMemberAccess)
 {
     EXPECT_FALSE(provides_member_access_v<int>);
