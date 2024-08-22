@@ -53,6 +53,15 @@ TEST(TypeList, ConstructFromTuple)
     auto list = type_list<int, double, Foo>{};
     EXPECT_TRUE((list == type_list{std::tuple<int, double, Foo>{}}));
     EXPECT_FALSE((list == type_list{std::tuple<double, Foo>{}}));
+    EXPECT_TRUE(type_list<>{} == type_list{std::tuple<>{}});
+}
+
+TEST(TypeList, ConstructFromTypeIdTuple)
+{
+    auto list = type_list<int, double, Foo>{};
+    static_assert(std::is_same_v<type_list<int, double, Foo>, decltype(type_list{std::tuple<type_identity<int>, type_identity<double>, type_identity<Foo>>{}})>);
+    EXPECT_TRUE((list == type_list{std::tuple<type_identity<int>, type_identity<double>, type_identity<Foo>>{}}));
+    EXPECT_FALSE((list == type_list{std::tuple<type_identity<int>, type_identity<Foo>>{}}));
 }
 
 template<typename T>

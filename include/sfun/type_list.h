@@ -3,6 +3,7 @@
 
 #include "type_traits.h"
 #include "utility.h"
+#include <functional>
 #include <tuple>
 
 namespace sfun {
@@ -37,8 +38,10 @@ class type_list {
     using list = detail::TypeList<Ts...>;
 
 public:
-    type_list() = default;
-    type_list(std::tuple<Ts...>){};
+    constexpr type_list() = default;
+
+    template<typename... TTypeListElems>
+    constexpr type_list(std::tuple<TTypeListElems...>){}
 
     static constexpr int size()
     {
@@ -72,6 +75,12 @@ private:
     }
 
 };
+
+template<typename... Ts>
+type_list(std::tuple<Ts...>) -> type_list<Ts...>;
+
+template<typename... Ts>
+type_list(std::tuple<type_identity<Ts>...>) -> type_list<Ts...>;
 
 template<std::size_t... I, typename... TLhs, typename... TRhs>
 constexpr bool compareImpl(std::index_sequence<I...>, const type_list<TLhs...>& lhs, const type_list<TRhs...>& rhs)
