@@ -2,7 +2,7 @@
 #define SFUN_WSTRINGCONV_H
 
 #ifdef _WIN32
-#include "detail/external/utf8.h"
+#include "utfcpp/source/utf8.h"
 #endif
 
 #include "utility.h"
